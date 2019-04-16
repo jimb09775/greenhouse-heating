@@ -91,7 +91,7 @@ class State(object):
 # state transitions
 
 class PumpOff(State):
- 
+
     def __init__(self):
         print('Change of state ----', str(self))
         GPIO.output(stove_valve,0)
@@ -200,9 +200,10 @@ def process_loop():
         wtt = read_temp(water_tank)
         spt = read_temp(solar_panel)
         wst = read_temp(wood_stove)
-		ght = read_temp(room_temp)
+        ght = read_temp(room_temp)
         now = int(time.time())
 
+        print(' WTT SPT WST GHT time')
         print(wtt,spt,wst,ght,now)
 
         TIME_OF_DAY = int(datetime.datetime.now().strftime("%H"))>9 and int(datetime.datetime.now().strftime("%H"))<17
@@ -271,23 +272,23 @@ def process_loop():
         # print('the wood stove is ',wst,'or in fahernheit',wst*9/5+32)
         # print(datetime.datetime.now().strftime("%H"))
 
-		# if(GPIO.input(pump)==1):
+        # if(GPIO.input(pump)==1):
         # 		f = open('./monthly_results/grnhouse' + time.strftime('%B') + '.csv','a')
         # 		f.write(str(now) + ','+ str(ght) + ',' + str(wtt) + ',' + str(spt) + ',' + str(wst) + ',' + str(GPIO.input(pump)) + '\n') #Give your csv text here.
         # 		## Python will convert \n to os.linesep
         # 		f.close()
 
         # 		time.sleep(55)
-		# else:
-		# 	if(datetime.datetime.now().minute == 0):
-		# 		currenthour = datetime.datetime.now().strftime("%H")
-		# 		f = open('./monthly_results/grnhouse' + time.strftime('%B') + '.csv','a')
+        # else:
+        # 	if(datetime.datetime.now().minute == 0):
+        # 		currenthour = datetime.datetime.now().strftime("%H")
+        # 		f = open('./monthly_results/grnhouse' + time.strftime('%B') + '.csv','a')
         # 			f.write(str(now) + ','+ str(ght) + ',' + str(wtt) + ',' + str(spt) + ',' + str(wst) + ',' + str(GPIO.input(pump)) + '\n')  #Give your csv text here.
         # 			## Python will convert \n to os.linesep
         # 			f.close()
-					
-					
-					
+                    
+                    
+                    
 # Now see what we're supposed to do next
 if __name__ == "__main__":
     try:
