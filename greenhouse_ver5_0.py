@@ -76,18 +76,30 @@ class State(object):
         """
         pass
 
+    def __repr__(self):
+        """
+        Leverages the __str__ method to describe the State.
+        """
+        return self.__str__()
+
+    def __str__(self):
+        """
+        Returns the name of the State.
+        """
+        return self.__class__.__name__
+
 # state transitions
 
 class PumpOff(State):
  
     def __init__(self):
-        print('Processing current state:', str(self))
+        print('Change of state ----', str(self))
         GPIO.output(stove_valve,0)
         GPIO.output(floor_valve,0)
         GPIO.output(pump,0)
 
     def status(self, event):
-        print(event["TIME_OF_DAY"], event["SP_GT_WT_OS"])
+        print('Current state:', str(self))
         if event["TIME_OF_DAY"] and event["SP_GT_WT_OS"]:
             return PumpOnNoValves()
         if event["WT_GT_RT"]:
@@ -98,12 +110,18 @@ class PumpOff(State):
 class PumpOnNoValves(State):
 
     def __init__(self):
-        print('Processing current state:', str(self))
+        print('Change of state ----', str(self))
         GPIO.output(stove_valve,0)
-        GPIO.output(floor_valve,0)
+        GPIO.output(floor_valve,1)
         GPIO.output(pump,1)
+        self.time_to_kill_floor_valve = datetime.datetime.now() + datetime.timedelta(minutes = 1)
 
     def status(self, event):
+        valve_on = datetime.datetime.now() < self.time_to_kill_floor_valve
+        print('Current state:', str(self), 'valve on', valve_on)
+        if valve_on:
+            return self
+        GPIO.output(floor_valve, 0)
         if not event["TIME_OF_DAY"] or not event["SP_GT_WT"]:
             return PumpOff()
         if event["STOVE_HOT"]:
@@ -113,12 +131,13 @@ class PumpOnNoValves(State):
 class PumpOnWoodStove(State):
     
     def __init__(self):
-        print('Processing current state:', str(self))
+        print('Change of state ----', str(self))
         GPIO.output(stove_valve,1)
         GPIO.output(floor_valve,0)
         GPIO.output(pump,1)
 
     def status(self, event):
+        print('Current state:', str(self))
         if not event["STOVE_HOT"]:
             return PumpOff()
         return self
@@ -126,12 +145,13 @@ class PumpOnWoodStove(State):
 class PumpOnFloorValve(State):
     
     def __init__(self):
-        print('Processing current state:', str(self))
+        print('Change of state ----', str(self))
         GPIO.output(stove_valve,0)
         GPIO.output(floor_valve,1)
         GPIO.output(pump,1)
 
     def status(self, event):
+        print('Current state:', str(self))
         if not event["STOVE_HOT"]:
             return PumpOff()
         return self
