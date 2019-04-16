@@ -87,11 +87,11 @@ class PumpOff(State):
         # cameron thinks the code to actually turn the pump off goes here
 
     def on_ event(self, event):
-        if event.TIME_OF_DAY and event.SP_GT_WT
+        if event["TIME_OF_DAY"] and event["SP_GT_WT"]
             return PumpOnNoValues()
-            # event.STOVE_HOT,
-            # event.WT_GT_RT,
-            # event.SP_GT_WT,
+            # event["STOVE_HOT"]
+            # event["WT_GT_RT"]
+            # event["SP_GT_WT"]
         return self
 
 
@@ -105,11 +105,11 @@ class PumpOnNoValues(State):
         # cameron thinks the code to actually turn the pump off goes here
 
     def on_event(self, event):
-        if event.
+        if event["TIME_OF_DAY"]
             return PumpOff()
-            # event.STOVE_HOT,
-            # event.WT_GT_RT,
-            # event.SP_GT_WT,
+            # event["STOVE_HOT"]
+            # event["WT_GT_RT"]
+            # event["SP_GT_WT"]
 
         return self
 

@@ -69,9 +69,7 @@ def process_loop():
     stove_hot=0
     GPIO.output(stove_valve,0)
     GPIO.output(pump,0)
-    GPIO.output(floor_valve,0)
-	currenthour = datetime.datetime.now().strftime("%H")
-    
+    GPIO.output(floor_valve,0)    
 
     # now cycle each relay every second in an infinite loop
     while True:
@@ -138,15 +136,13 @@ def process_loop():
         		f.write(str(now) + ','+ str(ght) + ',' + str(wtt) + ',' + str(spt) + ',' + str(wst) + ',' + str(GPIO.input(pump)) + '\n') #Give your csv text here.
         		## Python will convert \n to os.linesep
         		f.close()
-
         		time.sleep(55)
 		else:
-			if(datetime.datetime.now().strftime("%H") > currenthour):
-				currenthour = datetime.datetime.now().strftime("%H")
+			if(datetime.datetime.now().minute == 0):
 				f = open('./monthly_results/grnhouse' + time.strftime('%B') + '.csv','a')
-        			f.write(str(now) + ','+ str(ght) + ',' + str(wtt) + ',' + str(spt) + ',' + str(wst) + ',' + str(GPIO.input(pump)) + '\n')  #Give your csv text here.
-        			## Python will convert \n to os.linesep
-        			f.close()
+                f.write(str(now) + ','+ str(ght) + ',' + str(wtt) + ',' + str(spt) + ',' + str(wst) + ',' + str(GPIO.input(pump)) + '\n')  #Give your csv text here.
+                ## Python will convert \n to os.linesep
+                f.close()
 					
 					
 					
