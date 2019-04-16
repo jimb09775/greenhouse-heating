@@ -81,12 +81,13 @@ class State(object):
 class PumpOff(State):
  
     def __init__(self):
-        # switch everything off
+        print('Processing current state:', str(self))
         GPIO.output(stove_valve,0)
         GPIO.output(floor_valve,0)
         GPIO.output(pump,0)
 
     def status(self, event):
+        print(event["TIME_OF_DAY"], event["SP_GT_WT_OS"])
         if event["TIME_OF_DAY"] and event["SP_GT_WT_OS"]:
             return PumpOnNoValves()
         if event["WT_GT_RT"]:
@@ -97,7 +98,7 @@ class PumpOff(State):
 class PumpOnNoValves(State):
 
     def __init__(self):
-        # switch the pump on
+        print('Processing current state:', str(self))
         GPIO.output(stove_valve,0)
         GPIO.output(floor_valve,0)
         GPIO.output(pump,1)
@@ -112,7 +113,7 @@ class PumpOnNoValves(State):
 class PumpOnWoodStove(State):
     
     def __init__(self):
-        # switch the pump on
+        print('Processing current state:', str(self))
         GPIO.output(stove_valve,1)
         GPIO.output(floor_valve,0)
         GPIO.output(pump,1)
@@ -125,7 +126,7 @@ class PumpOnWoodStove(State):
 class PumpOnFloorValve(State):
     
     def __init__(self):
-        # switch the pump on
+        print('Processing current state:', str(self))
         GPIO.output(stove_valve,0)
         GPIO.output(floor_valve,1)
         GPIO.output(pump,1)
@@ -182,7 +183,9 @@ def process_loop():
 		ght = read_temp(room_temp)
         now = int(time.time())
 
-        TIME_OF_DAY = int(datetime.datetime.now().strftime("%H"))>10 and int(datetime.datetime.now().strftime("%H"))<17
+        print(wtt,spt,wst,ght,now)
+
+        TIME_OF_DAY = int(datetime.datetime.now().strftime("%H"))>9 and int(datetime.datetime.now().strftime("%H"))<17
         STOVE_HOT = wst > cold
         WT_GT_RT = wtt > ght # water tank hotter than the room
         SP_GT_WT_OS = spt > wtt + temp_offset # solar panel greater than water temp plus offset
