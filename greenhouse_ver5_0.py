@@ -103,7 +103,7 @@ class PumpOff(State):
         if event["TIME_OF_DAY"] and event["SP_GT_WT_OS"]:
             return PumpOnNoValves()
         if event["WT_GT_RT"]:
-            return PumpOnFloorValves()
+            return PumpOnFloorValve()
         return self
 
 
@@ -203,14 +203,12 @@ def process_loop():
         ght = read_temp(room_temp)
         now = int(time.time())
 
-        print(' WTT SPT WST GHT time')
-        print(wtt,spt,wst,ght,now)
 
         TIME_OF_DAY = int(datetime.datetime.now().strftime("%H"))>9 and int(datetime.datetime.now().strftime("%H"))<17
         STOVE_HOT = wst > cold
         WT_GT_RT = wtt > ght # water tank hotter than the room
         SP_GT_WT_OS = spt > wtt + temp_offset # solar panel greater than water temp plus offset
-        SP_GT_WT = spt > wtt # solar panel greater than water temp
+        SP_GT_WT = spt > wtt  # solar panel greater than water temp
         
         eventDict = {
             "TIME_OF_DAY": TIME_OF_DAY,
@@ -221,71 +219,28 @@ def process_loop():
         }
         
         mypump.status(eventDict)
-        ## cameron says the file ends here 
 
-        # if(STOVE_HOT and stove_hot==0):
-        #     # stove_hot=1
-        #     GPIO.output(pump,1)
-        #     GPIO.output(stove_valve,1)
-        #     print('stove is hot: pump and stove valve active')
-        # else:
-        #     if stove_hot==1:
-        #         if(wst > wtt):
-        #             print('leave stove valve and pump on')    
-                    
-        #         else:
-        #             stove_hot=0
-        #             GPIO.output(pump,0)
-        #             GPIO.output(stove_valve,0)
-        #             print('pump on')
-        #             print('stove hot pump and valve active')
-            
-        # # Loop to run the water to solar panels
-        # if TIME_OF_DAY and stove_hot==0:  #only allowed to run daylight h
-        #     print('inside of daylight hours')
-            
-        #     if(spt>wtt+10):  #solar panel is 10c degrees hotter than tank
-        #         GPIO.output(pump,1)
-        #         print('pump on')
-        #         sp=1
-        #     else:
-        #         if(sp==1 ):
-        #             if(spt>wtt+0):  #solar panel is 1 degrees hotter than tank
-        #                 print('leave pump on')  
-        #             else:
-        #                 GPIO.output(pump,0)
-        #                 print('pump off')
-        #                 sp=0
-        #         else:
-        #             GPIO.output(pump,0)
-        #             print('pump off')
-        # else:
-        #     if(stove_hot == 0):
-        #         GPIO.output(pump,0)
-        #         print('pump off')
-        #     print('outside of daylight hours')
-        # # END loop for solar panel pump
         
-        # print('room temperature is ',read_temp(room_temp), 'or in fahernheit',read_temp(room_temp)*9/5+32)
-        # print('Water Tank Temperature is ',wtt,'or in fahernheit',wtt*9/5+32)
-        # print('top of solar panel is ',spt,'or in fahernheit',spt*9/5+32)
-        # print('the wood stove is ',wst,'or in fahernheit',wst*9/5+32)
-        # print(datetime.datetime.now().strftime("%H"))
+        print('room temperature is ',read_temp(room_temp), 'or in fahernheit',read_temp(room_temp)*9/5+32)
+        print('Water Tank Temperature is ',wtt,'or in fahernheit',wtt*9/5+32)
+        print('top of solar panel is ',spt,'or in fahernheit',spt*9/5+32)
+        print('the wood stove is ',wst,'or in fahernheit',wst*9/5+32)
+        print(datetime.datetime.now().strftime("%H"))
 
-        # if(GPIO.input(pump)==1):
-        # 		f = open('./monthly_results/grnhouse' + time.strftime('%B') + '.csv','a')
-        # 		f.write(str(now) + ','+ str(ght) + ',' + str(wtt) + ',' + str(spt) + ',' + str(wst) + ',' + str(GPIO.input(pump)) + '\n') #Give your csv text here.
-        # 		## Python will convert \n to os.linesep
-        # 		f.close()
+        if(GPIO.input(pump)==1):
+        		f = open('./monthly_results/grnhse' + time.strftime('%B') + '.csv','a')
+        		f.write(str(now) + ','+ str(ght) + ',' + str(wtt) + ',' + str(spt) + ',' + str(wst) + ',' + str(GPIO.input(pump)) + '\n') #Give your csv text here.
+        		## Python will convert \n to os.linesep
+        		f.close()
 
-        # 		time.sleep(55)
-        # else:
-        # 	if(datetime.datetime.now().minute == 0):
-        # 		currenthour = datetime.datetime.now().strftime("%H")
-        # 		f = open('./monthly_results/grnhouse' + time.strftime('%B') + '.csv','a')
-        # 			f.write(str(now) + ','+ str(ght) + ',' + str(wtt) + ',' + str(spt) + ',' + str(wst) + ',' + str(GPIO.input(pump)) + '\n')  #Give your csv text here.
-        # 			## Python will convert \n to os.linesep
-        # 			f.close()
+        		time.sleep(55)
+        else:
+        	if(datetime.datetime.now().minute == 0):
+        		currenthour = datetime.datetime.now().strftime("%H")
+        		f = open('./monthly_results/grnhouse' + time.strftime('%B') + '.csv','a')
+        		f.write(str(now) + ','+ str(ght) + ',' + str(wtt) + ',' + str(spt) + ',' + str(wst) + ',' + str(GPIO.input(pump)) + '\n')  #Give your csv text here.
+        		## Python will convert \n to os.linesep
+        		f.close()
                     
                     
                     
