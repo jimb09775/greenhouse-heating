@@ -114,6 +114,7 @@ class PumpOnNoValves(State):
         GPIO.output(stove_valve,0)
         GPIO.output(floor_valve,1)
         GPIO.output(pump,1)
+        print('Current state:', str(self), 'valve on', valve_on)
         self.time_to_kill_floor_valve = datetime.datetime.now() + datetime.timedelta(minutes = 1)
 
     def status(self, event):
@@ -189,7 +190,7 @@ def process_loop():
     GPIO.output(stove_valve,0)
     GPIO.output(pump,0)
     GPIO.output(floor_valve,0)
-    temp_offset = 7
+    temp_offset = 12
     cold = 50
 
     mypump = Pump()
@@ -204,7 +205,7 @@ def process_loop():
         now = int(time.time())
 
 
-        TIME_OF_DAY = int(datetime.datetime.now().strftime("%H"))>9 and int(datetime.datetime.now().strftime("%H"))<17
+        TIME_OF_DAY = int(datetime.datetime.now().strftime("%H"))>10 and int(datetime.datetime.now().strftime("%H"))<17
         STOVE_HOT = wst > cold
         WT_GT_RT = wtt > ght # water tank hotter than the room
         SP_GT_WT_OS = spt > wtt + temp_offset # solar panel greater than water temp plus offset
